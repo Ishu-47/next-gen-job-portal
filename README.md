@@ -122,10 +122,17 @@ User
  ├── password
  ├── role
 
+Employer
+ ├── id
+ ├── name
+ ├── email
+ ├── company_id
+
 Company
  ├── id
  ├── name
  ├── description
+ ├── location
  ├── employer_id
 
 Job
@@ -133,14 +140,19 @@ Job
  ├── title
  ├── description
  ├── location
- ├── skills
  ├── company_id
+ ├── employer_id
 
 Application
  ├── id
  ├── user_id
  ├── job_id
  ├── status
+ ├── applied_at
+
+Skills
+ ├── id
+ ├── name
 ```
 
 ---

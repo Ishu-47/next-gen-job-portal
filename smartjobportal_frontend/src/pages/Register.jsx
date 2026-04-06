@@ -61,7 +61,7 @@ function Register() {
             await registerUser(form);
 
             alert("Registration successful");
-            navigate("/login");
+            navigate("/dashboard");
 
         } catch (err) {
 

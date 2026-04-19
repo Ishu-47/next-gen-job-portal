@@ -4,21 +4,23 @@ import { loginUser } from "../services/authService";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
-    // const { login } = useContext(AuthContext);
+    const { login } = useContext(AuthContext);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setLoading(true);
         try {
             const res = await loginUser({ email, password });
 
             const { token, role } = res;
-
-            localStorage.setItem("token", token);
+            login(token);
+            //localStorage.setItem("token", token);
             localStorage.setItem("role", role);
 
             if (role === "JOB_SEEKER") {
@@ -27,15 +29,15 @@ function Login() {
                 navigate("/recruiter/dashboard");
             }
 
-            alert("Login successful");
-
         } catch (err) {
-            alert("Login failed");
+            alert("Invalid email or password");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="flex justify-center items-center h-screen">
+        <div className="flex justify-center items-center min-h-screen bg-linear-to-br from-blue-50 to-gray-100 px-4">
             <form
                 onSubmit={handleSubmit}
                 className="bg-white p-6 shadow-md rounded w-96">

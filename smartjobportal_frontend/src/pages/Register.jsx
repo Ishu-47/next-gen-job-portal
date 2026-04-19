@@ -6,7 +6,7 @@ import API from "../api/axios";
 function Register() {
 
     const [skills, setSkills] = useState([]);
-    const[loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [form, setForm] = useState({
         name: "",
         email: "",
@@ -63,17 +63,19 @@ function Register() {
                 email: form.email,
                 password: form.password
             });
+            const token = res.token;
+            const role = res.role;
             localStorage.setItem("token", token);
             localStorage.setItem("role", role);
-            if(role == "JOB_SEEKER"){
+            if (role == "JOB_SEEKER") {
                 navigate("/dashboard");
             } else {
                 navigate("/recruiter/dashboard");
             }
         } catch (err) {
-            console.error(err);
-            alert("Registration failed");
-
+            console.log("FULL ERROR:", err);
+            console.log("RESPONSE DATA:", err.response?.data);
+            alert(JSON.stringify(err.response?.data));
         } finally {
             setLoading(false);
         }
@@ -82,93 +84,93 @@ function Register() {
     return (
         <div className="flex justify-center items-center min-h-screen bg-linear-to-br from-blue-50 to-gray-100 px-4">
             <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
-                <h2 className="text-2xl font-bold text-center mb-2"> 
+                <h2 className="text-2xl font-bold text-center mb-2">
                     Create your account
                 </h2>
                 <p className="text-sm text-gray-500 text-center mb-6">
                     Start your journey with Smartjobs 💼
                 </p>
-                
-            
-            <form
-                onSubmit={handleSubmit}
-                className="space-y-4"
-            >
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Full Name"
-                    className="border w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    onChange={handleChange}
-                    required
-                />
 
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email Address"
-                    className="border w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    onChange={handleChange}
-                    required
-                />
 
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    className="border w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    onChange={handleChange}
-                    required
-                />
-
-                <select
-                    name="role"
-                    className="border w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    onChange={handleChange}
+                <form
+                    onSubmit={handleSubmit}
+                    className="space-y-4"
                 >
-                    <option value="JOB_SEEKER">Job Seeker</option>
-                    <option value="EMPLOYER">Employer</option>
-                </select>
-                
-                <div>
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Full Name"
+                        className="border w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        onChange={handleChange}
+                        required
+                    />
 
-                    <p className="text-sm font-semibold mb-2">
-                        Select Skills
-                    </p>
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Email Address"
+                        className="border w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        onChange={handleChange}
+                        required
+                    />
 
-                    <div className="flex flex-wrap gap-2 max-h-32 overflow-auto">
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        className="border w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        onChange={handleChange}
+                        required
+                    />
 
-                        {skills.map(skill => (
+                    <select
+                        name="role"
+                        className="border w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        onChange={handleChange}
+                    >
+                        <option value="JOB_SEEKER">Job Seeker</option>
+                        <option value="EMPLOYER">Employer</option>
+                    </select>
 
-                            <span key={skill.id} onClick={() => handleSkillChange(skill.id)} className={`px-3 py-1 text-sm rounded-full cursor-pointer border transition 
+                    <div>
+
+                        <p className="text-sm font-semibold mb-2">
+                            Select Skills
+                        </p>
+
+                        <div className="flex flex-wrap gap-2 max-h-32 overflow-auto">
+
+                            {skills.map(skill => (
+
+                                <span key={skill.id} onClick={() => handleSkillChange(skill.id)} className={`px-3 py-1 text-sm rounded-full cursor-pointer border transition 
                                         ${form.skillIds.includes(skill.id)
-                                            ? "bg-blue-600 text-white"
-                                            : "bg-gray-100 hover:bg-gray-200"
-                                        }`}>
-                                {skill.name}
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-gray-100 hover:bg-gray-200"
+                                    }`}>
+                                    {skill.name}
 
-                            </span>
+                                </span>
 
-                        ))}
+                            ))}
 
+                        </div>
                     </div>
-                </div>
 
-                <button
-                type="submit"
-                disabled={loading} 
-                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
-                    {loading ? "Creating account..." : "Register"}
-                </button>
-            </form>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                        {loading ? "Creating account..." : "Register"}
+                    </button>
+                </form>
 
-            <p className="text-sm text-center mt-4 text-gray-500">
-                Already have an account?{" "}
-                <span className="text-blue-600 cursor-pointer hover:underline" onClick={() => navigate("/login")}>
-                    Login
-                </span>
-            </p>
-        </div>
+                <p className="text-sm text-center mt-4 text-gray-500">
+                    Already have an account?{" "}
+                    <span className="text-blue-600 cursor-pointer hover:underline" onClick={() => navigate("/login")}>
+                        Login
+                    </span>
+                </p>
+            </div>
         </div>
     );
 }

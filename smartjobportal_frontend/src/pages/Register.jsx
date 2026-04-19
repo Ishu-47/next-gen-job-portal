@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { registerUser } from "../services/authService";
+import { loginUser, registerUser } from "../services/authService";
 import { useNavigate } from "react-router-dom";
 import API from "../api/axios";
 
 function Register() {
 
     const [skills, setSkills] = useState([]);
-
+    const[loading, setLoading] = useState(false);
     const [form, setForm] = useState({
         name: "",
         email: "",
@@ -55,104 +55,120 @@ function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setLoading(true);
         try {
 
             await registerUser(form);
-
-            alert("Registration successful");
-            navigate("/dashboard");
-
+            const res = await loginUser({
+                email: form.email,
+                password: form.password
+            });
+            localStorage.setItem("token", token);
+            localStorage.setItem("role", role);
+            if(role == "JOB_SEEKER"){
+                navigate("/dashboard");
+            } else {
+                navigate("/recruiter/dashboard");
+            }
         } catch (err) {
-
             console.error(err);
             alert("Registration failed");
 
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen">
-
+        <div className="flex justify-center items-center min-h-screen bg-linear-to-br from-blue-50 to-gray-100 px-4">
+            <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
+                <h2 className="text-2xl font-bold text-center mb-2"> 
+                    Create your account
+                </h2>
+                <p className="text-sm text-gray-500 text-center mb-6">
+                    Start your journey with Smartjobs 💼
+                </p>
+                
+            
             <form
                 onSubmit={handleSubmit}
-                className="bg-white p-6 shadow-md rounded w-96"
+                className="space-y-4"
             >
-
-                <h2 className="text-xl font-bold mb-4">
-                    Register
-                </h2>
-
                 <input
                     type="text"
                     name="name"
-                    placeholder="Name"
-                    className="border p-2 w-full mb-3"
+                    placeholder="Full Name"
+                    className="border w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     onChange={handleChange}
+                    required
                 />
 
                 <input
                     type="email"
                     name="email"
-                    placeholder="Email"
-                    className="border p-2 w-full mb-3"
+                    placeholder="Email Address"
+                    className="border w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     onChange={handleChange}
+                    required
                 />
 
                 <input
                     type="password"
                     name="password"
                     placeholder="Password"
-                    className="border p-2 w-full mb-3"
+                    className="border w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     onChange={handleChange}
+                    required
                 />
 
                 <select
                     name="role"
-                    className="border p-2 w-full mb-3"
+                    className="border w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     onChange={handleChange}
                 >
                     <option value="JOB_SEEKER">Job Seeker</option>
                     <option value="EMPLOYER">Employer</option>
                 </select>
+                
+                <div>
 
-                {/* Skill Selection */}
-
-                <div className="mb-4">
-
-                    <p className="font-semibold mb-2">
+                    <p className="text-sm font-semibold mb-2">
                         Select Skills
                     </p>
 
-                    <div className="max-h-32 overflow-y-auto border p-2 rounded">
+                    <div className="flex flex-wrap gap-2 max-h-32 overflow-auto">
 
                         {skills.map(skill => (
 
-                            <label key={skill.id} className="block">
-
-                                <input
-                                    type="checkbox"
-                                    className="mr-2"
-                                    checked={form.skillIds.includes(skill.id)}
-                                    onChange={() => handleSkillChange(skill.id)}
-                                />
-
+                            <span key={skill.id} onClick={() => handleSkillChange(skill.id)} className={`px-3 py-1 text-sm rounded-full cursor-pointer border transition 
+                                        ${form.skillIds.includes(skill.id)
+                                            ? "bg-blue-600 text-white"
+                                            : "bg-gray-100 hover:bg-gray-200"
+                                        }`}>
                                 {skill.name}
 
-                            </label>
+                            </span>
 
                         ))}
 
                     </div>
-
                 </div>
 
-                <button className="bg-blue-500 text-white p-2 w-full">
-                    Register
+                <button
+                type="submit"
+                disabled={loading} 
+                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                    {loading ? "Creating account..." : "Register"}
                 </button>
-
             </form>
 
+            <p className="text-sm text-center mt-4 text-gray-500">
+                Already have an account?{" "}
+                <span className="text-blue-600 cursor-pointer hover:underline" onClick={() => navigate("/login")}>
+                    Login
+                </span>
+            </p>
+        </div>
         </div>
     );
 }

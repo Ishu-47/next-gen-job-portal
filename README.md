@@ -280,18 +280,11 @@ GET /api/applications/job/{jobId}
 
 # 📷 Screenshots
 
-You can add screenshots here:
 
 ```
 /screenshots/home.png
 /screenshots/dashboard.png
 /screenshots/job-list.png
-```
-
-Example:
-
-```
-![Home Page](screenshots/home.png)
 ```
 
 ---

@@ -12,8 +12,8 @@ import MyApplications from "./pages/MyApplications";
 import PostJob from "./pages/PostJob";
 import CreateCompany from "./pages/CreateCompany";
 // import JobApplications from "./pages/JobApplications";
-
 import ProtectedRoute from "./routes/ProtectedRoute";
+import PublicRoute from "./routes/PublicRoute";
 
 function App() {
 
@@ -24,15 +24,15 @@ function App() {
 
         {/* Public Routes */}
         <Route path="/" element={<Navigate to="/register" />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
 
         {/* Job Seeker */}
 
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute roleRequired="JOB_SEEKER">
               <Dashboard />
             </ProtectedRoute>
           }
@@ -41,7 +41,7 @@ function App() {
         <Route
           path="/jobs"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute >
               <Jobs />
             </ProtectedRoute>
           }
